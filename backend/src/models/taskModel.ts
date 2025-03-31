@@ -2,6 +2,7 @@ import { Schema, model, Document, Model } from "mongoose";
 
 // Define the interface for Task
 export interface ITask extends Document {
+  id: string;
   task: string;
   createdAt: Date;
   updatedAt: Date;
