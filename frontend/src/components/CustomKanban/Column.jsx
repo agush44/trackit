@@ -1,7 +1,10 @@
+"use client";
+
 import { useState } from "react";
 import { Card } from "./Card";
 import { AddCard } from "./AddCard";
 import { DropIndicator } from "./DropIndicator";
+import { updateTask } from "../../services/taskApi";
 
 export const Column = ({ title, headingColor, cards, column, setCards }) => {
   const [active, setActive] = useState(false);
@@ -10,7 +13,8 @@ export const Column = ({ title, headingColor, cards, column, setCards }) => {
     e.dataTransfer.setData("cardId", card.id);
   };
 
-  const handleDragEnd = (e) => {
+  // Modificar la función handleDragEnd para actualizar el backend cuando una card cambia de columna
+  const handleDragEnd = async (e) => {
     const cardId = e.dataTransfer.getData("cardId");
 
     setActive(false);
@@ -24,10 +28,17 @@ export const Column = ({ title, headingColor, cards, column, setCards }) => {
     if (before !== cardId) {
       let copy = [...cards];
 
+      // Encontrar la card que se está moviendo
       let cardToTransfer = copy.find((c) => c.id === cardId);
       if (!cardToTransfer) return;
+
+      // Guardar la columna original para verificar si cambió
+      const originalColumn = cardToTransfer.column;
+
+      // Actualizar la columna de la card
       cardToTransfer = { ...cardToTransfer, column };
 
+      // Remover la card de su posición actual
       copy = copy.filter((c) => c.id !== cardId);
 
       const moveToBack = before === "-1";
@@ -41,7 +52,21 @@ export const Column = ({ title, headingColor, cards, column, setCards }) => {
         copy.splice(insertAtIndex, 0, cardToTransfer);
       }
 
+      // Actualizar el estado local primero para una experiencia más fluida
       setCards(copy);
+
+      // Solo actualizar en el backend si la columna cambió
+      if (originalColumn !== column) {
+        try {
+          // Importar la función updateTask si no está ya importada
+          // Actualizar en el backend
+          await updateTask(cardId, { column });
+          console.log(`Card ${cardId} moved to ${column}`);
+        } catch (err) {
+          console.error("Error updating task column:", err);
+          // Si falla, podríamos mostrar un mensaje de error
+        }
+      }
     }
   };
 

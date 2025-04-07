@@ -1,17 +1,18 @@
 import { Schema, model, Document, Model } from "mongoose";
 
-// Define the interface for Task
+// Interface de la tarea
 export interface ITask extends Document {
-  id: string;
-  task: string;
+  title: string;
+  column: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-// Define the Schema for Task
+// Esquema de Mongoose
 const taskSchema = new Schema<ITask>(
   {
-    task: { type: String, required: true },
+    title: { type: String, required: true },
+    column: { type: String, required: true },
   },
   {
     versionKey: false,
@@ -19,14 +20,13 @@ const taskSchema = new Schema<ITask>(
   }
 );
 
-// Create the Task model
+// Modelo
 const Task: Model<ITask> = model<ITask>("Task", taskSchema);
 
-// Define the function to get all tasks
+// Obtener todas las tareas
 const getAllTasks = async (): Promise<ITask[]> => {
   try {
-    const tasks = await Task.find();
-    return tasks;
+    return await Task.find();
   } catch (error) {
     throw {
       status: 500,
@@ -35,14 +35,15 @@ const getAllTasks = async (): Promise<ITask[]> => {
   }
 };
 
-// Define the function to add a new task
+// Agregar una nueva tarea
 interface IAddTask {
-  task: string;
+  title: string;
+  column: string;
 }
 
-const addTask = async (dataTask: IAddTask): Promise<ITask> => {
+const addTask = async (data: IAddTask): Promise<ITask> => {
   try {
-    const newTask = new Task(dataTask);
+    const newTask = new Task(data);
     await newTask.save();
     return newTask;
   } catch (error) {
@@ -53,10 +54,10 @@ const addTask = async (dataTask: IAddTask): Promise<ITask> => {
   }
 };
 
-// Define the function to edit an existing task
+// Editar tarea
 const editTask = async (
   id: string,
-  updateData: Partial<ITask>
+  updateData: Partial<IAddTask>
 ): Promise<ITask> => {
   try {
     const task = await Task.findById(id);
@@ -72,28 +73,26 @@ const editTask = async (
   } catch (error) {
     throw {
       status: 500,
-      message: "Error editing the task",
+      message: "Error editing the task.",
     };
   }
 };
 
-// Define the function to delete a task
+// Eliminar tarea
 const deleteTask = async (id: string): Promise<ITask | null> => {
   try {
     const deletedTask = await Task.findByIdAndDelete(id);
-
     if (!deletedTask) {
       throw {
         status: 404,
         message: "Task not found.",
       };
     }
-
     return deletedTask;
   } catch (error) {
     throw {
       status: 500,
-      message: "Error deleting the task",
+      message: "Error deleting the task.",
     };
   }
 };

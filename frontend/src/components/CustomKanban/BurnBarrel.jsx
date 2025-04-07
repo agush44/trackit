@@ -1,8 +1,13 @@
+"use client";
+
 import { FiTrash } from "react-icons/fi";
 import { useState } from "react";
+import { FaFire } from "react-icons/fa";
+import { deleteTask } from "../../services/taskApi";
 
 export const BurnBarrel = ({ setCards }) => {
   const [active, setActive] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -13,12 +18,23 @@ export const BurnBarrel = ({ setCards }) => {
     setActive(false);
   };
 
-  const handleDragEnd = (e) => {
+  const handleDragEnd = async (e) => {
     const cardId = e.dataTransfer.getData("cardId");
 
-    setCards((pv) => pv.filter((c) => c.id !== cardId));
+    if (!cardId || isDeleting) return;
 
-    setActive(false);
+    try {
+      setIsDeleting(true);
+
+      await deleteTask(cardId);
+
+      setCards((pv) => pv.filter((c) => c.id !== cardId));
+    } catch (err) {
+      console.error("Error deleting task:", err);
+    } finally {
+      setIsDeleting(false);
+      setActive(false);
+    }
   };
 
   return (

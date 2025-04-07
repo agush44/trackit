@@ -16,21 +16,24 @@ const getAllTasks = async (
   }
 };
 
-// Crear una nueva tarea
+// Agregar una nueva tarea
 const addTask = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const newTask: ITask = await Task.addTask(req.body);
+    const { title, column } = req.body;
 
-    if (!newTask) {
-      return res.status(400).json({
+    if (!title || !column) {
+      res.status(400).json({
         status: 400,
-        error: "Failed to create task. Please try again.",
+        error: "Both title and column are required.",
       });
+      return;
     }
+
+    const newTask: ITask = await Task.addTask({ title, column });
 
     res.status(201).json(newTask);
   } catch (error) {
@@ -38,7 +41,7 @@ const addTask = async (
   }
 };
 
-// Editar una tarea existente
+// Editar una tarea
 const editTask = async (
   req: Request,
   res: Response,
@@ -46,22 +49,24 @@ const editTask = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const editData: Partial<ITask> = req.body; // Los datos de la tarea a editar
+    const updateData: Partial<ITask> = req.body;
 
-    const editedTask: ITask | null = await Task.editTask(id, editData);
+    const editedTask: ITask | null = await Task.editTask(id, updateData);
 
     if (!editedTask) {
-      return res.status(404).json({
+      res.status(404).json({
         status: 404,
         error: "Task not found.",
       });
+      return;
     }
 
     res.status(200).json({
       message: "Task edited successfully.",
       task: {
         _id: editedTask._id,
-        task: editedTask.task,
+        title: editedTask.title,
+        column: editedTask.column,
         createdAt: editedTask.createdAt,
         updatedAt: editedTask.updatedAt,
       },
@@ -81,19 +86,21 @@ const deleteTask = async (
     const { id } = req.params;
 
     if (!id) {
-      return res.status(400).json({
+      res.status(400).json({
         status: 400,
         error: "Task ID is required.",
       });
+      return;
     }
 
     const deletedTask: ITask | null = await Task.deleteTask(id);
 
     if (!deletedTask) {
-      return res.status(404).json({
+      res.status(404).json({
         status: 404,
         error: "Task not found.",
       });
+      return;
     }
 
     res.status(200).json({ message: "Task successfully deleted." });
