@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { FiPlus } from "react-icons/fi";
 import { useState } from "react";
-import { createTask } from "../../services/taskApi"; // Adjust the import path as necessary
+import { createTask } from "../../services/taskApi";
 
 export const AddCard = ({ column, setCards }) => {
   const [text, setText] = useState("");
@@ -16,17 +16,15 @@ export const AddCard = ({ column, setCards }) => {
     try {
       setIsSubmitting(true);
 
-      // Create task in the backend
       const newTask = await createTask({
         title: text.trim(),
         column,
       });
 
-      // Add the new task to the local state
       setCards((pv) => [
         ...pv,
         {
-          id: newTask._id, // Use the MongoDB _id
+          id: newTask._id,
           title: newTask.title,
           column: newTask.column,
         },
@@ -36,7 +34,6 @@ export const AddCard = ({ column, setCards }) => {
       setAdding(false);
     } catch (err) {
       console.error("Error creating task:", err);
-      // You might want to show an error message to the user
     } finally {
       setIsSubmitting(false);
     }

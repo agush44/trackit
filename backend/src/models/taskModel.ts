@@ -1,18 +1,20 @@
 import { Schema, model, Document, Model } from "mongoose";
 
-// Interface de la tarea
 export interface ITask extends Document {
   title: string;
   column: string;
+  description?: string;
+  coverImage?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-// Esquema de Mongoose
 const taskSchema = new Schema<ITask>(
   {
     title: { type: String, required: true },
     column: { type: String, required: true },
+    description: { type: String },
+    coverImage: { type: String },
   },
   {
     versionKey: false,
@@ -20,10 +22,8 @@ const taskSchema = new Schema<ITask>(
   }
 );
 
-// Modelo
 const Task: Model<ITask> = model<ITask>("Task", taskSchema);
 
-// Obtener todas las tareas
 const getAllTasks = async (): Promise<ITask[]> => {
   try {
     return await Task.find();
@@ -34,11 +34,11 @@ const getAllTasks = async (): Promise<ITask[]> => {
     };
   }
 };
-
-// Agregar una nueva tarea
 interface IAddTask {
   title: string;
   column: string;
+  description?: string;
+  coverImage?: string;
 }
 
 const addTask = async (data: IAddTask): Promise<ITask> => {
@@ -54,7 +54,6 @@ const addTask = async (data: IAddTask): Promise<ITask> => {
   }
 };
 
-// Editar tarea
 const editTask = async (
   id: string,
   updateData: Partial<IAddTask>
@@ -78,7 +77,6 @@ const editTask = async (
   }
 };
 
-// Eliminar tarea
 const deleteTask = async (id: string): Promise<ITask | null> => {
   try {
     const deletedTask = await Task.findByIdAndDelete(id);

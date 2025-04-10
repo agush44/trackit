@@ -1,5 +1,3 @@
-"use client";
-
 import { Column } from "./Column";
 import { BurnBarrel } from "./BurnBarrel";
 import { useState, useEffect } from "react";
@@ -10,18 +8,20 @@ export const Board = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch tasks when component mounts
   useEffect(() => {
     const loadTasks = async () => {
       try {
         setLoading(true);
         const tasks = await fetchAllTasks();
-        // Transform backend tasks to match our frontend format if needed
+
         const formattedTasks = tasks.map((task) => ({
-          id: task._id, // Use MongoDB _id as our id
+          id: task._id,
           title: task.title,
           column: task.column,
+          description: task.description || "",
+          coverImage: task.coverImage || "",
         }));
+
         setCards(formattedTasks);
       } catch (err) {
         console.error("Failed to load tasks:", err);

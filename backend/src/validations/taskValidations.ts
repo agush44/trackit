@@ -11,4 +11,11 @@ export const taskSchema = z.object({
     required_error: "Column is required.",
     invalid_type_error: "Invalid column type.",
   }),
+
+  description: z
+    .string()
+    .max(1000, { message: "Description must not exceed 1000 characters." })
+    .optional(),
+
+  coverImage: z.union([z.string(), z.literal(""), z.null()]).optional(),
 });

@@ -22,6 +22,8 @@ export const updateTask = async (
   id: string,
   taskData: Partial<ITask>
 ): Promise<ITask> => {
+  console.log("📡 Payload final:", taskData);
+
   return fetchData(`${API_URL}/api/tasks/${id}`, {
     method: "PUT",
     headers: {

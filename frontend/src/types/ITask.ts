@@ -1,7 +1,9 @@
 export interface ITask {
-    id: string;
-    task: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }
-  
+  id?: string;
+  title: string;
+  column: string;
+  description?: string;
+  coverImage?: string;
+  createdAt: string;
+  updatedAt: string;
+}

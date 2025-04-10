@@ -1,5 +1,3 @@
-"use client";
-
 import { FiTrash } from "react-icons/fi";
 import { useState } from "react";
 import { FaFire } from "react-icons/fa";

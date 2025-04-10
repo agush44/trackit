@@ -67,6 +67,8 @@ const editTask = async (
         _id: editedTask._id,
         title: editedTask.title,
         column: editedTask.column,
+        description: editedTask.description,
+        coverImage: editedTask.coverImage,
         createdAt: editedTask.createdAt,
         updatedAt: editedTask.updatedAt,
       },
