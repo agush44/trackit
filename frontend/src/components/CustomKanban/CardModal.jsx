@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { X, ImageIcon, Trash2, Loader } from "lucide-react";
+import { X, ImageIcon, Trash2 } from "lucide-react";
 import { UnsplashSearch } from "./UnsplashSearch";
 import Button from "../UI/Button";
 
@@ -74,9 +74,9 @@ export const CardModal = ({ card, onClose, onSave }) => {
           <h3 className="text-lg font-medium text-white">Editar tarjeta</h3>
           <button
             onClick={onClose}
-            className="text-neutral-400 hover:text-white transition-colors"
+            className="p-2 rounded-full hover:bg-neutral-700 transition-colors text-neutral-400 hover:text-white"
           >
-            <X size={20} />
+            <X size={16} />
           </button>
         </div>
 
@@ -91,7 +91,7 @@ export const CardModal = ({ card, onClose, onSave }) => {
               onClick={handleRemoveCover}
               className="absolute top-2 right-2 bg-black/50 p-1 rounded-full hover:bg-black/70 transition-colors"
             >
-              <Trash2 size={16} className="text-white" />
+              <Trash2 size={20} className="text-white m-1.5" />
             </button>
           </div>
         )}
